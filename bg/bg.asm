@@ -5,7 +5,7 @@ INCLUDE	"gbhw.inc"
 
 SECTION	"V-Blank IRQ Vector",ROM0[$40]
     reti    ;なにもせずリターン(retiは、割り込みを再有効化してくれるret)
-	
+
 SECTION	"LCD IRQ Vector",ROM0[$48]
     reti
 
@@ -25,8 +25,8 @@ SECTION	"Joypad IRQ Vector",ROM0[$60]
 
 
 SECTION	"Start",ROM0[$100]  
-	nop         ;(多分)サイズ合わせようのダミー命令
-	jp	main
+    nop         ;(多分)サイズ合わせようのダミー命令
+    jp	main
 
     ;gbhw.incに含まれる、ROM情報を自動生成してくれる便利なマクロ
     ROM_HEADER	ROM_NOMBC, ROM_SIZE_32KBYTE, RAM_SIZE_0KBYTE
@@ -66,15 +66,15 @@ TileEnd:
 ; メインルーチン
 
 main:
-	di                  ; いったん割り込みを無効化
-	ld	sp, $ffff		; スタックポインタをメモリ空間の底に設定
+    di                  ; いったん割り込みを無効化
+    ld  sp, $ffff       ; スタックポインタをメモリ空間の底に設定
 
-	ld	a, %11100100 	; パレット(パレットごとに2bitで白さを指定。MSBがパット番号0番)
-	ld	[rBGP], a		; BGPレジスタにパレットを設定
+    ld  a, %11100100    ; パレット(パレットごとに2bitで白さを指定。MSBがパット番号0番)
+    ld  [rBGP], a		; BGPレジスタにパレットを設定
 
-	ld	a,0			    ; スクロールレジスタを設定し、画面を右上に固定
-	ld	[rSCX], a       ; SCXレジスタ
-	ld	[rSCY], a	    ; SCYレジスタ	
+    ld  a,0	            ; スクロールレジスタを設定し、画面を右上に固定
+    ld  [rSCX], a       ; SCXレジスタ
+    ld  [rSCY], a       ; SCYレジスタ	
 
 .waitVBlank:                ; 画面描画を止めるため、まず現在の描画が終るのを待つ
     ld  a, [rLY]
