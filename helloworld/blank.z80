@@ -1,26 +1,26 @@
 
 ;割り込みハンドラ(何もしない) 
 
-SECTION	"V-Blank IRQ Vector",ROM0[$40]
+SECTION "V-Blank IRQ Vector",ROM0[$40]
     reti    ;なにもせずリターン(retiは、割り込みを再有効化してくれるret)
-	
-SECTION	"LCD IRQ Vector",ROM0[$48]
+
+SECTION "LCD IRQ Vector",ROM0[$48]
     reti
 
-SECTION	"Timer IRQ Vector",ROM0[$50]
+SECTION "Timer IRQ Vector",ROM0[$50]
     reti
 
-SECTION	"Serial IRQ Vector",ROM0[$58]
+SECTION "Serial IRQ Vector",ROM0[$58]
     reti
 
-SECTION	"Joypad IRQ Vector",ROM0[$60]
+SECTION "Joypad IRQ Vector",ROM0[$60]
     reti
 
 
 ; リセット時、ここ(ROMの0x100番地)から実行が始まる 
-SECTION	"Start",ROM0[$100]  
-	nop         ;(多分)サイズ合わせようのダミー命令
-	jp	main
+SECTION "Start",ROM0[$100]  
+    nop         ;(多分)サイズ合わせようのダミー命令
+    jp   main
 
     ;ROMに関する情報。とりあえず気にしなくてよい
     DB $CE,$ED,$66,$66,$CC,$0D,$00,$0B,$03,$73,$00,$83,$00,$0C,$00,$0D
@@ -39,9 +39,9 @@ SECTION	"Start",ROM0[$100]
     DB 0                         ; $14d - Complement check (rgbfixが自動的に算出してくれる)
     DW 0                         ; $14e - Checksum (実機は無視するらしい)
 
-; いわゆるmain関数
+; mainルーチン
 main:
-	ld	sp, $ffff	; スタックポインタをメモリ空間の底に設定
+    ld   sp, $ffff   ; スタックポインタをRAM空間の底に設定
     xor  a          ; a=0
 mainloop:
     inc a           ; a++
