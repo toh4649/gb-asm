@@ -1,21 +1,21 @@
-INCLUDE	"gbhw.inc"
+INCLUDE "gbhw.inc"
 
 ;**************************************
 ;割り込みハンドラ(何もしない) 
 
-SECTION	"V-Blank IRQ Vector",ROM0[$40]
+SECTION "V-Blank IRQ Vector",ROM0[$40]
     reti    ;なにもせずリターン(retiは、割り込みを再有効化してくれるret)
 
-SECTION	"LCD IRQ Vector",ROM0[$48]
+SECTION "LCD IRQ Vector",ROM0[$48]
     reti
 
-SECTION	"Timer IRQ Vector",ROM0[$50]
+SECTION "Timer IRQ Vector",ROM0[$50]
     reti
 
-SECTION	"Serial IRQ Vector",ROM0[$58]
+SECTION "Serial IRQ Vector",ROM0[$58]
     reti
 
-SECTION	"Joypad IRQ Vector",ROM0[$60]
+SECTION "Joypad IRQ Vector",ROM0[$60]
     reti
 
 
@@ -24,12 +24,12 @@ SECTION	"Joypad IRQ Vector",ROM0[$60]
 ; リセット時、ここから実行が始まる 
 
 
-SECTION	"Start",ROM0[$100]  
+SECTION "Start",ROM0[$100]  
     nop         ;(多分)サイズ合わせようのダミー命令
-    jp	main
+    jp  main
 
     ;gbhw.incに含まれる、ROM情報を自動生成してくれる便利なマクロ
-    ROM_HEADER	ROM_NOMBC, ROM_SIZE_32KBYTE, RAM_SIZE_0KBYTE
+    ROM_HEADER ROM_NOMBC, ROM_SIZE_32KBYTE, RAM_SIZE_0KBYTE
 
 ;**************************************
 ; 定数など  
@@ -70,11 +70,11 @@ main:
     ld  sp, $ffff       ; スタックポインタをメモリ空間の底に設定
 
     ld  a, %11100100    ; パレット(パレットごとに2bitで白さを指定。MSBがパット番号0番)
-    ld  [rBGP], a		; BGPレジスタにパレットを設定
+    ld  [rBGP], a       ; BGPレジスタにパレットを設定
 
-    ld  a,0	            ; スクロールレジスタを設定し、画面を右上に固定
+    ld  a,0             ; スクロールレジスタを設定し、画面を右上に固定
     ld  [rSCX], a       ; SCXレジスタ
-    ld  [rSCY], a       ; SCYレジスタ	
+    ld  [rSCY], a       ; SCYレジスタ
 
 .waitVBlank:                ; 画面描画を止めるため、まず現在の描画が終るのを待つ
     ld  a, [rLY]
@@ -85,18 +85,18 @@ main:
     res 7, a             
     ld  [rLCDC], a          ; VRAMに書き込むため、画面描画を止める
 
-	ld	hl, Tile            ; vramcpy コピー元
-	ld	bc, _VRAM           ; vramcpy コピー先
-	ld	de, TileEnd-Tile 	; vramcpy コピー長さ
-	call  vramcpy           ; ROMからタイルをロード
+    ld  hl, Tile            ; vramcpy コピー元
+    ld  bc, _VRAM           ; vramcpy コピー先
+    ld  de, TileEnd-Tile    ; vramcpy コピー長さ
+    call  vramcpy           ; ROMからタイルをロード
 
-	ld	b, $0               ; vramset 設定値
-	ld	hl, _SCRN0          ; vramset コピー先
+    ld  b, $0               ; vramset 設定値
+    ld  hl, _SCRN0          ; vramset コピー先
     ld  de, 32*32           ;vramset コピー長さ
-	call  vramset           ; 画面全域にタイル番号0番を設定
+    call  vramset           ; 画面全域にタイル番号0番を設定
 
-	ld	a, LCDCF_ON|LCDCF_BG8000|LCDCF_BG9800|LCDCF_BGON|LCDCF_OBJ16|LCDCF_OBJOFF
-	ld	[rLCDC], a	        ; 画面ON
+    ld  a, LCDCF_ON|LCDCF_BG8000|LCDCF_BG9800|LCDCF_BGON|LCDCF_OBJ16|LCDCF_OBJOFF
+    ld  [rLCDC], a          ; 画面ON
 
 mainloop:
     halt
@@ -125,9 +125,9 @@ vramcpy:
     inc hl
     inc bc
 .loopEnd:
-    dec  e 
-	jr	nz, .loop 
-    dec  d  ;e(下位バイト)が0になるとここに来る
+    dec e 
+    jr  nz, .loop 
+    dec d  ;e(下位バイト)が0になるとここに来る
     jr  nz, .loop
     ret
 
@@ -153,8 +153,8 @@ vramset:
     ld  [hl], a
     inc hl
 .loopEnd:
-    dec  e 
-	jr	nz, .loop 
-    dec  d  ;e(下位バイト)が0になるとここに来る
+    dec e 
+    jr  nz, .loop 
+    dec d  ;e(下位バイト)が0になるとここに来る
     jr  nz, .loop
     ret
